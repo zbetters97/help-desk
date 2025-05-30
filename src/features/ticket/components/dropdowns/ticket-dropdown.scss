@@ -1,6 +1,6 @@
 @use "src/styles/abstracts/mixins" as *;
 
-.status-select {
+.ticket-dropdown {
   @include flexrow(initial, center, 0.75em);
   position: relative;
   cursor: pointer;
@@ -9,6 +9,7 @@
   padding: 0.75em 1em;
 
   &__icon {
+    display: inline-block;
     border-radius: 50%;
     width: 1em;
     height: 1em;
@@ -47,6 +48,7 @@
 
   &__option {
     padding: 0.5em 0.75em;
+
     &:hover {
       background-color: lightgray;
     }

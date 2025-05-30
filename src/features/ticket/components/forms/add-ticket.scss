@@ -41,12 +41,6 @@
     padding: 1em;
   }
 
-  &__users {
-  }
-
-  &__details {
-  }
-
   &__field {
     @include flexcol($gap: 0.5em);
   }

@@ -1,9 +1,33 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import TicketDropdown from "../dropdowns/TicketDropdown";
 import "./add-ticket.scss";
-import StatusSelect from "../dropdowns/StatusSelect";
+
+const statusList = [
+  { label: "New", value: "new" },
+  { label: "Open", value: "open" },
+  { label: "Waiting", value: "waiting" },
+  { label: "Paused", value: "paused" },
+  { label: "Resolved", value: "resolved" },
+];
+
+const priorityList = [
+  { label: "Low", value: "low" },
+  { label: "Medium", value: "medium" },
+  { label: "High", value: "high" },
+];
+
+const severityList = [
+  { label: "Low", value: "low" },
+  { label: "Medium", value: "medium" },
+  { label: "High", value: "high" },
+];
 
 const AddTicket = () => {
   const formRef = useRef(null);
+
+  const [status, setStatus] = useState(statusList[0]);
+  const [priority, setPriority] = useState(priorityList[0]);
+  const [severity, setSeverity] = useState(severityList[0]);
 
   const handleSubmit = () => {
     console.log("called");
@@ -17,26 +41,24 @@ const AddTicket = () => {
       </div>
 
       <div className="add-ticket__properties">
-        <StatusSelect />
-
-        <FormSelect
-          label="Priority"
-          name="priority"
-          options={[
-            { label: "Low", value: "low" },
-            { label: "Medium", value: "medium" },
-            { label: "High", value: "high" },
-          ]}
+        <TicketDropdown
+          showIcon
+          label="Status"
+          items={statusList}
+          selected={status}
+          setSelected={setStatus}
         />
-
-        <FormSelect
+        <TicketDropdown
+          label="Priority"
+          items={priorityList}
+          selected={priority}
+          setSelected={setPriority}
+        />
+        <TicketDropdown
           label="Severity"
-          name="severity"
-          options={[
-            { label: "Low", value: "low" },
-            { label: "Medium", value: "medium" },
-            { label: "High", value: "high" },
-          ]}
+          items={severityList}
+          selected={severity}
+          setSelected={setSeverity}
         />
       </div>
 
