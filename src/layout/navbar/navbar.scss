@@ -1,0 +1,12 @@
+@use "src/styles/abstracts/mixins" as *;
+
+.nav {
+  height: 100%;
+  background-color: blue;
+  padding: 2em;
+}
+
+.navbar {
+  @include flexcol(center, center, 0.5em);
+  height: 100%;
+}

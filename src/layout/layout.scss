@@ -1,16 +1,16 @@
 @use "src/styles/abstracts/mixins" as *;
 
 .wrapper {
-  @include flexcol();
+  @include flexrow(center, center);
+  background-color: red;
+  width: 100%;
   height: 100dvh;
   height: 100svh;
 }
 
 .main {
-  @include flexrow(center, center);
-  flex: 1;
-  margin: auto;
+  flex-grow: 1;
   width: 100%;
+  background-color: green;
   height: 100%;
-  overflow: auto;
 }

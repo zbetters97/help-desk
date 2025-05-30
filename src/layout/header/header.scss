@@ -1,0 +1,7 @@
+@use "src/styles/abstracts/mixins" as *;
+
+.header {
+  @include flexrow(space-between, center);
+  width: 100%;
+  background-color: orange;
+}
