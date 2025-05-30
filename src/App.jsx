@@ -29,6 +29,16 @@ const App = () => {
           errorElement: <Pages.ErrorPage is404={false} />,
         },
         {
+          path: "/ticket",
+          element: <Pages.TicketPage />,
+          errorElement: <Pages.ErrorPage is404={false} />,
+        },
+        {
+          path: "/ticket/:ticketId",
+          element: <Pages.TicketPage />,
+          errorElement: <Pages.ErrorPage is404={false} />,
+        },
+        {
           path: "*",
           element: <Pages.ErrorPage is404={true} />,
           errorElement: <Pages.ErrorPage is404={false} />,

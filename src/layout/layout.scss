@@ -9,8 +9,8 @@
 }
 
 .main {
+  @include flexcol();
   flex-grow: 1;
   width: 100%;
-  background-color: green;
   height: 100%;
 }

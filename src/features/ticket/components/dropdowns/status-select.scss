@@ -1,0 +1,54 @@
+@use "src/styles/abstracts/mixins" as *;
+
+.status-select {
+  @include flexrow(initial, center, 0.75em);
+  position: relative;
+  cursor: pointer;
+  border: 1px solid lightgray;
+  background-color: white;
+  padding: 0.75em 1em;
+
+  &__icon {
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+
+    &--new {
+      background-color: red;
+    }
+    &--open {
+      background-color: orange;
+    }
+    &--waiting {
+      background-color: blue;
+    }
+    &--paused {
+      background-color: gray;
+    }
+    &--resolved {
+      background-color: green;
+    }
+  }
+
+  &__options {
+    @include flexcol();
+    position: absolute;
+    top: 110%;
+    left: 0;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+    background-color: white;
+    padding: 0.15em;
+    width: 100%;
+
+    &[aria-expanded="false"] {
+      display: none;
+    }
+  }
+
+  &__option {
+    padding: 0.5em 0.75em;
+    &:hover {
+      background-color: lightgray;
+    }
+  }
+}
