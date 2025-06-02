@@ -1,33 +1,35 @@
 @use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
 
 .ticket-dropdown {
+  @include font(0.35, normal, $dark-gray);
+  @include border(1px, $lighter-gray, $border-sm);
   @include flexrow(initial, center, 0.75em);
   position: relative;
   cursor: pointer;
-  border: 1px solid lightgray;
-  background-color: white;
-  padding: 0.75em 1em;
+  background-color: $basic-white;
+  padding: 0.5em 1em;
 
   &__icon {
     display: inline-block;
     border-radius: 50%;
-    width: 1em;
-    height: 1em;
+    width: 0.75em;
+    height: 0.75em;
 
     &--new {
-      background-color: red;
+      background-color: $basic-red;
     }
     &--open {
-      background-color: orange;
+      background-color: $basic-yellow;
     }
     &--waiting {
-      background-color: blue;
+      background-color: $basic-blue;
     }
     &--paused {
-      background-color: gray;
+      background-color: $basic-gray;
     }
     &--resolved {
-      background-color: green;
+      background-color: $basic-green;
     }
   }
 
@@ -47,10 +49,11 @@
   }
 
   &__option {
+    @include flexrow(initial, center, 0.5em);
     padding: 0.5em 0.75em;
 
     &:hover {
-      background-color: lightgray;
+      background-color: $lighter-gray;
     }
   }
 }

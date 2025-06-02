@@ -1,3 +1,26 @@
+@use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
+
 .searchbar {
-  background-color: purple;
+  @include font(0.5);
+  @include flexrow(initial, center, 0.75em);
+  cursor: pointer;
+  border-radius: $border-md;
+  padding: 0.5em 0.75em;
+  width: 50%;
+
+  &:hover,
+  &:focus-within {
+    background-color: $light-gray;
+  }
+
+  &__input {
+    @include font(0.5);
+    cursor: pointer;
+
+    &:focus {
+      cursor: text;
+      outline: none;
+    }
+  }
 }

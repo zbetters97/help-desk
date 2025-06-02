@@ -1,6 +1,6 @@
-@use "./colors" as *;
+@use "./variables" as *;
 
-@mixin font($size: 1, $weight: normal, $color: $basic-white, $style: normal) {
+@mixin font($size: 1, $weight: normal, $color: $basic-black, $style: normal) {
   color: $color;
   font-style: $style;
   font-weight: $weight;
@@ -15,6 +15,11 @@
 @mixin padding-x($padding) {
   padding-right: $padding;
   padding-left: $padding;
+}
+
+@mixin border($width: 1px, $color: $basic-black, $radius: 0) {
+  border: $width solid $color;
+  border-radius: $radius;
 }
 
 @mixin flexrow($justify: initial, $align: initial, $gap: initial) {

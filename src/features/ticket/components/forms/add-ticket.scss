@@ -1,44 +1,58 @@
 @use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
 
 .add-ticket {
-  @include flexcol(initial, stretch, 0.5em);
-  background-color: lightgray;
+  @include flexcol(initial, stretch);
+  background-color: $light-gray;
   width: 100%;
   height: 100%;
 
   & > div {
-    padding: 1em;
+    padding: 1em 1.5em;
   }
 
   &__header {
     @include flexrow(space-between, center);
-    background-color: white;
+    border-bottom: 1px solid $lighter-gray;
+    background-color: $basic-white;
+  }
+
+  &__title {
+    @include font(1, normal);
   }
 
   &__save {
-    @include font(1);
-    background-color: blue;
+    @include font(0.5, normal, $basic-white);
+    border-radius: $border-md;
+    background-color: $basic-blue;
+    padding: 0.5em 0.75em;
   }
 
   &__properties {
     @include flexrow(initial, center, 0.5em);
-    background-color: white;
+    background-color: $basic-white;
   }
 
   &__content {
     @include flexrow(initial, stretch, 1em);
-    background-color: lightgray;
     padding: 1em;
     width: 100%;
   }
 
   &__users,
   &__details {
+    @include border(1px, $lighter-gray, $border-sm);
     @include flexcol($gap: 1em);
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-    border-color: 1px solid lightgray;
-    background-color: white;
+    background-color: $basic-white;
     padding: 1em;
+  }
+
+  &__users {
+    width: 30%;
+  }
+
+  &__details {
+    width: 90%;
   }
 
   &__field {
@@ -46,24 +60,27 @@
   }
 
   &__label {
-    @include font(0.75, normal, black);
+    @include font(0.75, normal);
   }
 
-  &__select {
-    @include font(0.75, normal, black);
-    border: 1px solid lightgray;
-    background-color: white;
+  &__select,
+  &__input,
+  &__textarea {
+    @include font(0.75, normal);
+    @include border(1px, $lighter-gray, $border-md);
     padding: 0.25em 0.5em;
 
     &:focus {
-      border: 1px solid blue;
+      outline: 2px solid $basic-blue;
     }
   }
 
-  &__input,
+  &__select {
+    cursor: pointer;
+    background-color: $basic-white;
+  }
+
   &__textarea {
-    @include font(0.75, normal, black);
-    border: 1px solid lightgray;
-    padding: 0.25em 0.5em;
+    height: 7em;
   }
 }

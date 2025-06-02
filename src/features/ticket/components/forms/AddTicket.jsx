@@ -22,6 +22,18 @@ const severityList = [
   { label: "High", value: "high" },
 ];
 
+const requesterList = [
+  { label: "User 1", value: "user1" },
+  { label: "User 2", value: "user2" },
+  { label: "User 3", value: "user3" },
+];
+
+const assigneeList = [
+  { label: "User 1", value: "user1" },
+  { label: "User 2", value: "user2" },
+  { label: "User 3", value: "user3" },
+];
+
 const AddTicket = () => {
   const formRef = useRef(null);
 
@@ -36,7 +48,7 @@ const AddTicket = () => {
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="add-ticket">
       <div className="add-ticket__header">
-        <h1 className="add-ticket__title">Create Ticket</h1>
+        <h3 className="add-ticket__title">Create a Ticket</h3>
         <FormSubmitButton />
       </div>
 
@@ -67,22 +79,10 @@ const AddTicket = () => {
           <FormSelect
             label="Requester"
             name="requester"
-            options={[
-              { label: "User 1", value: "user1" },
-              { label: "User 2", value: "user2" },
-              { label: "User 3", value: "user3" },
-            ]}
+            options={requesterList}
           />
 
-          <FormSelect
-            label="Assignee"
-            name="assignee"
-            options={[
-              { label: "User 1", value: "user1" },
-              { label: "User 2", value: "user2" },
-              { label: "User 3", value: "user3" },
-            ]}
-          />
+          <FormSelect label="Assignee" name="assignee" options={assigneeList} />
         </div>
 
         <div className="add-ticket__details">
@@ -101,8 +101,15 @@ const FormSelect = ({ label, name, options }) => {
         {label}
       </label>
       <select id={name} className="add-ticket__select">
+        <option value="" disabled selected>
+          Choose an option
+        </option>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option
+            key={option.value}
+            value={option.value}
+            className="add-ticket__option"
+          >
             {option.label}
           </option>
         ))}

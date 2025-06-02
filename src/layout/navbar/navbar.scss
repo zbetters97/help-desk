@@ -1,12 +1,22 @@
 @use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
 
 .nav {
+  @include flexcol(center, center);
   height: 100%;
-  background-color: blue;
-  padding: 2em;
+  background-color: $darker-blue;
 }
 
 .navbar {
-  @include flexcol(center, center, 0.5em);
-  height: 100%;
+  padding: 1.5em;
+  background-color: $dark-blue;
+
+  &__list {
+    @include flexcol(center, initial, 1em);
+    white-space: nowrap;
+  }
+
+  &__item {
+    @include font(0.5, normal, $basic-gray);
+  }
 }

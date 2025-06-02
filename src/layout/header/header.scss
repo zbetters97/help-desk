@@ -1,7 +1,15 @@
 @use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
 
 .header {
   @include flexrow(space-between, center);
+  border-bottom: 1px solid $lighter-gray;
+  background-color: $basic-white;
+  padding: 0.5em 1em;
   width: 100%;
-  background-color: orange;
+
+  &__options {
+    @include font(0.75);
+    @include flexrow(initial, center, 0.5em);
+  }
 }
