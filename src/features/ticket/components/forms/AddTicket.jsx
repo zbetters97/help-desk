@@ -1,54 +1,85 @@
 import { useRef, useState } from "react";
+import useTicket from "../../hooks/useTicket";
 import TicketDropdown from "../dropdowns/TicketDropdown";
 import "./add-ticket.scss";
 
-const statusList = [
-  { label: "New", value: "new" },
-  { label: "Open", value: "open" },
-  { label: "Waiting", value: "waiting" },
-  { label: "Paused", value: "paused" },
-  { label: "Resolved", value: "resolved" },
-];
-
-const priorityList = [
-  { label: "Low", value: "low" },
-  { label: "Medium", value: "medium" },
-  { label: "High", value: "high" },
-];
-
-const severityList = [
-  { label: "Low", value: "low" },
-  { label: "Medium", value: "medium" },
-  { label: "High", value: "high" },
-];
-
-const requesterList = [
-  { label: "User 1", value: "user1" },
-  { label: "User 2", value: "user2" },
-  { label: "User 3", value: "user3" },
-];
-
-const assigneeList = [
-  { label: "User 1", value: "user1" },
-  { label: "User 2", value: "user2" },
-  { label: "User 3", value: "user3" },
-];
+const statusList = ["New", "Open", "Waiting", "Paused", "Resolved"];
+const priorityList = ["Low", "Medium", "High"];
+const severityList = ["Low", "Medium", "High"];
+const requesterList = ["User 1", "User 2", "User 3"];
+const assigneeList = ["User 1", "User 2", "User 3"];
 
 const AddTicket = () => {
+  const { addTicket } = useTicket();
+
   const formRef = useRef(null);
 
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
 
-  const handleSubmit = () => {
-    console.log("called");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+
+    // Submit form to firestore
+    await submitToDb();
+
+    // Reset dropdown values
+    setStatus(statusList[0]);
+    setPriority(priorityList[0]);
+    setSeverity(severityList[0]);
+
+    // Reset form values
+    formRef.current.reset();
+  };
+
+  const validateForm = () => {
+    const requester = formRef.current.elements.requester.value;
+    if (!requester || requester == "") {
+      return false;
+    }
+
+    const subject = formRef.current.elements.subject.value;
+    if (!subject || subject == "") {
+      return false;
+    }
+
+    const description = formRef.current.elements.description.value;
+    if (!description || description == "") {
+      return false;
+    }
+
+    return true;
+  };
+
+  const submitToDb = async () => {
+    const formData = new FormData(formRef.current);
+
+    const requester = formData.get("requester");
+    const subject = formData.get("subject");
+    const description = formData.get("description");
+    const assignee = formData.get("assignee") || "";
+
+    await addTicket(
+      requester,
+      subject,
+      description,
+      status,
+      priority,
+      severity,
+      assignee
+    );
   };
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="add-ticket">
       <div className="add-ticket__header">
-        <h3 className="add-ticket__title">Create a Ticket</h3>
+        <h3 className="add-ticket__title">Create a ticket</h3>
         <FormSubmitButton />
       </div>
 
@@ -100,17 +131,18 @@ const FormSelect = ({ label, name, options }) => {
       <label htmlFor={name} className="add-ticket__label">
         {label}
       </label>
-      <select id={name} className="add-ticket__select">
-        <option value="" disabled selected>
-          Choose an option
+      <select
+        id={name}
+        name={name}
+        defaultValue=""
+        className="add-ticket__select"
+      >
+        <option value="" disabled>
+          -- Choose an option --
         </option>
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            className="add-ticket__option"
-          >
-            {option.label}
+          <option key={option} value={option} className="add-ticket__option">
+            {option}
           </option>
         ))}
       </select>
@@ -128,6 +160,7 @@ const FormInput = ({ label, name, type }) => {
         type={type}
         placeholder={label}
         id={name}
+        name={name}
         className="add-ticket__input"
       />
     </div>
@@ -142,6 +175,7 @@ const FormTextArea = ({ label, name }) => {
       </label>
       <textarea
         id={name}
+        name={name}
         placeholder={label}
         className="add-ticket__textarea"
       />

@@ -23,7 +23,7 @@
 
   &__save {
     @include font(0.5, normal, $basic-white);
-    border-radius: $border-md;
+    border-radius: $border-sm;
     background-color: $basic-blue;
     padding: 0.5em 0.75em;
   }

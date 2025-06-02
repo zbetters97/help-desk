@@ -29,18 +29,18 @@ const TicketDropdown = ({ showIcon, label, items, selected, setSelected }) => {
     >
       {showIcon && (
         <span
-          className={`ticket-dropdown__icon ticket-dropdown__icon--${selected.value}`}
+          className={`ticket-dropdown__icon ticket-dropdown__icon--${selected.toLowerCase()}`}
         />
       )}
       <p>
-        {label}: <span>{selected.label}</span>
+        {label}: <span>{selected}</span>
       </p>
       <FontAwesomeIcon icon={faCaretDown} />
 
       <ul className="ticket-dropdown__options" aria-expanded={showItems}>
         {items.map((option) => (
           <li
-            key={option.value}
+            key={option.toLowerCase()}
             onClick={() => {
               setSelected(option);
               setShowItems(false);
@@ -49,10 +49,10 @@ const TicketDropdown = ({ showIcon, label, items, selected, setSelected }) => {
           >
             {showIcon && (
               <span
-                className={`ticket-dropdown__icon ticket-dropdown__icon--${option.value}`}
+                className={`ticket-dropdown__icon ticket-dropdown__icon--${option.toLowerCase()}`}
               />
             )}
-            {option.label}
+            {option}
           </li>
         ))}
       </ul>
