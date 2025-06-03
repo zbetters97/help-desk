@@ -27,7 +27,9 @@ const PasswordReset = ({ isModalOpen, setSuccess }) => {
     e.target.classList.remove("auth__input--invalid");
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (!(await validateData())) return;
 
     const email = inputRef.current.value;

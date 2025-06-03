@@ -17,7 +17,8 @@ const Signup = ({ setIsSignup }) => {
 
     const formData = new FormData(formRef.current);
 
-    const displayname = formData.get("displayname");
+    const firstname = formData.get("firstname");
+    const lastname = formData.get("lastname");
     const email = formData.get("email");
     const password = formData.get("password");
 
@@ -25,19 +26,20 @@ const Signup = ({ setIsSignup }) => {
       return;
     }
 
-    if (await signup(displayname, email, password, setError)) {
+    if (await signup(firstname, lastname, email, password, setError)) {
       setIsSignup(false);
     }
   };
 
   const validateData = () => {
-    const displayname = formRef.current.elements.displayname;
+    const firstname = formRef.current.elements.firstname;
+    const lastname = formRef.current.elements.lastname;
     const email = formRef.current.elements.email;
     const password = formRef.current.elements.password;
     const repassword = formRef.current.elements.repassword;
 
-    if (displayname.value === "") {
-      setError("Please enter a display name.");
+    if (firstname.value === "" || lastname.value === "") {
+      setError("Please enter your name.");
       displayname.classList.add("auth__input--invalid");
       return false;
     }
@@ -82,7 +84,8 @@ const Signup = ({ setIsSignup }) => {
       onSubmit={handleSubmit}
       className="auth__form auth__form--signup"
     >
-      <FormInput id="displayname" label="Display Name" type="text" />
+      <FormInput id="firstname" label="First Name" type="text" />
+      <FormInput id="lastname" label="Last Name" type="text" />
       <FormInput id="email" label="Email" type="email" />
 
       <FormInput id="password" label="Password" type="password" />

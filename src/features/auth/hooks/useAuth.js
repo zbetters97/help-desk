@@ -11,17 +11,20 @@ import {
 } from "firebase/auth";
 
 const useAuth = () => {
-  const signup = async (displayname, email, password, setError) => {
+  const signup = async (firstName, lastName, email, password, setError) => {
     try {
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-
       const newUser = userCredentials.user;
 
+      const displayname = `${firstName} ${lastName}`;
+
       const newUserData = {
+        firstName,
+        lastName,
         displayname: displayname.toLowerCase(),
         email: email.toLowerCase(),
         createdAt: new Date(),

@@ -30,12 +30,17 @@ const App = () => {
           errorElement: <Pages.ErrorPage is404={false} />,
         },
         {
-          path: "/tickets",
+          path: "/dashboard/:filter",
+          element: <Pages.HomePage />,
+          errorElement: <Pages.ErrorPage is404={false} />,
+        },
+        {
+          path: "/ticketing",
           element: <Pages.TicketPage />,
           errorElement: <Pages.ErrorPage is404={false} />,
         },
         {
-          path: "/tickets/:ticketId",
+          path: "/ticketing/:ticketId",
           element: <Pages.TicketPage />,
           errorElement: <Pages.ErrorPage is404={false} />,
         },

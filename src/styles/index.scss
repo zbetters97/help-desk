@@ -34,7 +34,7 @@ ul {
 }
 
 button {
-  color: $basic-white;
+  color: $basic-black;
   cursor: pointer;
   border: none;
   background-color: transparent;
@@ -43,6 +43,10 @@ button {
 input {
   border: none;
   background-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 select {

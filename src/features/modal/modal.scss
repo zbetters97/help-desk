@@ -29,7 +29,7 @@
     width: fit-content;
     max-width: 800px;
     border-radius: 12px;
-    background-color: black;
+    background-color: $basic-white;
   }
 
   &__button {
@@ -37,7 +37,6 @@
     position: absolute;
     top: 1%;
     right: 3%;
-    color: $basic-white;
   }
 }
 

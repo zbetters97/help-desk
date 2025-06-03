@@ -22,7 +22,7 @@ const AuthPage = () => {
       }
 
       if (globalUser) {
-        navigate("/messages");
+        navigate("/dashboard");
       }
 
       setLoading(false);

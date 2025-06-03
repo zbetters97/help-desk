@@ -75,8 +75,11 @@
   }
 
   &__highlight {
-    @include font(0.75, bold);
-    color: $basic-green;
+    @include font(0.75, bold, $light-blue);
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__back {
