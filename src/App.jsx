@@ -11,6 +11,11 @@ import AppProviders from "./pages/AppProviders";
 const App = () => {
   const router = createBrowserRouter([
     {
+      path: "/auth",
+      element: <Pages.AuthPage />,
+      errorElement: <Pages.ErrorPage is404={false} />,
+    },
+    {
       path: "/",
       element: <Layout />,
       children: [
@@ -18,11 +23,7 @@ const App = () => {
           index: true,
           element: <Navigate to="/dashboard" />,
         },
-        {
-          path: "/auth",
-          element: <Pages.AuthPage />,
-          errorElement: <Pages.ErrorPage is404={false} />,
-        },
+
         {
           path: "/dashboard",
           element: <Pages.HomePage />,

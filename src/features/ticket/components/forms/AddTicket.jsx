@@ -29,13 +29,7 @@ const AddTicket = () => {
     // Submit form to firestore
     await submitToDb();
 
-    // Reset dropdown values
-    setStatus(statusList[0]);
-    setPriority(priorityList[0]);
-    setSeverity(severityList[0]);
-
-    // Reset form values
-    formRef.current.reset();
+    resetForm();
   };
 
   const validateForm = () => {
@@ -74,6 +68,16 @@ const AddTicket = () => {
       severity,
       assignee
     );
+  };
+
+  const resetForm = () => {
+    // Reset dropdown values
+    setStatus(statusList[0]);
+    setPriority(priorityList[0]);
+    setSeverity(severityList[0]);
+
+    // Reset form values
+    formRef.current.reset();
   };
 
   return (

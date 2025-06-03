@@ -1,0 +1,27 @@
+@use "src/styles/abstracts" as *;
+
+.alert {
+  @include font(0.75, normal, $basic-black, italic);
+  @include padding-y(1em);
+  @include flexrow(center, center, 0.5em);
+  opacity: 0;
+  transition: all 0.2s;
+  margin: 0 auto;
+  width: fit-content;
+  height: 20px;
+
+  &[aria-expanded="true"] {
+    opacity: 1;
+  }
+
+  &__icon {
+    color: $basic-red;
+  }
+}
+
+@include md {
+  .alert {
+    padding: 0;
+    font-size: 1rem;
+  }
+}

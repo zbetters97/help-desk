@@ -1,0 +1,157 @@
+@use "src/styles/abstracts" as *;
+
+.auth {
+  @include padding-y(2em);
+  margin: auto;
+  width: 100%;
+  max-width: 650px;
+
+  &__wrapper {
+    @include flexrow(center, center);
+    overflow: auto;
+    background-color: $darker-blue;
+    width: 100%;
+    height: 100dvh;
+    height: 100svh;
+  }
+
+  &__container {
+    @include flexcol(center, center, 0.5em);
+    margin: auto;
+    border-radius: $border-md;
+    background-color: $basic-white;
+    padding: 2em;
+    width: 100%;
+  }
+
+  &__header {
+    @include font(0.75, bold, $basic-blue);
+    padding-bottom: 1em;
+  }
+
+  &__form {
+    @include flexcol(initial, initial, 0.5em);
+    margin: auto;
+    width: 100%;
+
+    &--reset {
+      gap: 0.75em;
+      padding: 1em;
+    }
+  }
+
+  &__group {
+    @include flexcol(initial, flex-start, 0.5em);
+    width: 100%;
+  }
+
+  &__label {
+    @include font(0.75, normal, $dark-gray);
+  }
+
+  &__input {
+    @include font(1);
+    @include border(1px, $lighter-gray, $border-sm);
+    outline: none;
+    padding: 0.35em 0.5em;
+    width: 100%;
+
+    &--invalid {
+      border-color: $basic-red;
+    }
+  }
+
+  &__submit {
+    @include font(0.75, normal, $basic-white);
+    border-radius: $border-md;
+    background-color: $basic-blue;
+    padding: 0.75em;
+    width: 100%;
+  }
+
+  &__reset {
+    @include font(0.75);
+    @include flexrow(center, center, 0.5em);
+  }
+
+  &__highlight {
+    @include font(0.75, bold);
+    color: $basic-green;
+  }
+
+  &__back {
+    @include font(0.75);
+    @include flexcol(initial, center, 1em);
+    margin-top: 1em;
+    border-top: 1px solid $lighter-gray;
+    padding-top: 1em;
+  }
+
+  &__back-button {
+    @include font(0.85);
+    @include border(1px, $basic-black, $border-sm);
+    @include flexrow(center, center, 0.5em);
+    position: relative;
+    vertical-align: middle;
+    transition: all 0.2s;
+    margin: 0 auto;
+    padding: 0.5em 1.5em;
+    text-align: center;
+
+    &--before:hover {
+      padding-right: 1em;
+      padding-left: 2em;
+
+      .auth__arrow {
+        left: 10px;
+        opacity: 1;
+      }
+    }
+
+    &--after:hover {
+      padding-right: 2em;
+      padding-left: 1em;
+
+      .auth__arrow {
+        right: 10px;
+        opacity: 1;
+      }
+    }
+  }
+
+  &__arrow {
+    @include flexrow(center, center);
+    position: absolute;
+    top: 0;
+    flex-wrap: initial;
+    gap: initial;
+    transform: translateY(50%);
+    opacity: 0;
+    transition: 0.2s;
+
+    &--after {
+      right: 0;
+    }
+
+    &--before {
+      left: 0;
+    }
+  }
+
+  &__google {
+    @include font(0.75, normal, $basic-white);
+    @include flexrow(center, center, 0.5em);
+    margin: 1em auto;
+    background-color: $light-blue;
+    padding: 0.75em;
+    width: fit-content;
+
+    &:hover {
+      background-color: $basic-blue;
+    }
+
+    &__icon {
+      @include font(1, normal, $basic-white);
+    }
+  }
+}
