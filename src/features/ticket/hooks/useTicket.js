@@ -34,6 +34,7 @@ const useTicket = () => {
         severity,
         assigneeId,
         createdAt: new Date(),
+        lastUpdated: new Date(),
       };
 
       const ticketRef = collection(db, "tickets");
@@ -46,6 +47,36 @@ const useTicket = () => {
       await setDoc(ticketDocRef, ticket);
 
       await updateDoc(ticketIdRef, { counter: ticketId });
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  const updateTicket = async (
+    ticketId,
+    requesterId,
+    subject,
+    status = "new",
+    priority = "low",
+    severity = "low",
+    assigneeId = ""
+  ) => {
+    try {
+      const ticket = {
+        requesterId,
+        subject,
+        status,
+        priority,
+        severity,
+        assigneeId,
+        lastUpdated: new Date(),
+      };
+
+      const ticketRef = doc(db, "tickets", ticketId);
+      await updateDoc(ticketRef, ticket);
 
       return true;
     } catch (error) {
@@ -205,6 +236,7 @@ const useTicket = () => {
 
   return {
     addTicket,
+    updateTicket,
 
     getAllTickets,
     getTicketById,

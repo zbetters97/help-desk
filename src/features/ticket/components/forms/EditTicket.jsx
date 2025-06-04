@@ -1,27 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { priorityList, severityList, statusList } from "src/data/const";
 import TicketSave from "../buttons/TicketSave";
-import TicketSelect from "../inputs/TicketSelect";
 import TicketTextarea from "../inputs/TicketTextarea";
+import TicketAssignee from "../inputs/TicketAssignee";
+import TicketRequester from "../inputs/TicketRequester";
 import TicketDropdown from "../dropdowns/TicketDropdown";
 import { useTicketContext } from "../../context/TicketContext";
 import "./ticket-form.scss";
 
 const EditTicket = ({ ticketId }) => {
-  const { getAllUsers } = useAuthContext();
-  const { getTicketById } = useTicketContext();
+  const { getTicketById, updateTicket } = useTicketContext();
 
   const [loading, setLoading] = useState(true);
 
   const [ticket, setTicket] = useState(null);
+
+  const [subject, setSubject] = useState("");
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
-  const [requesterList, setRequesterList] = useState([]);
-  const [assigneeList, setAssigneeList] = useState([]);
+  const [requester, setRequester] = useState("");
+  const [assignee, setAssignee] = useState("");
 
   const [canSave, setCanSave] = useState(false);
 
@@ -36,13 +37,12 @@ const EditTicket = ({ ticketId }) => {
       const fetchedTicket = await getTicketById(ticketId);
       setTicket(fetchedTicket);
 
+      setSubject(fetchedTicket.subject);
       setStatus(fetchedTicket.status);
       setPriority(fetchedTicket.priority);
       setSeverity(fetchedTicket.severity);
-
-      const users = await getAllUsers();
-      setAssigneeList(users);
-      setRequesterList(users);
+      setRequester(fetchedTicket.requesterId);
+      setAssignee(fetchedTicket.assigneeId);
 
       setLoading(false);
     };
@@ -50,10 +50,18 @@ const EditTicket = ({ ticketId }) => {
     fetchTicket();
   }, [ticketId]);
 
-  const handleSubjectChange = (e) => {
-    // Can only save if not blank and change has been made
-    setCanSave(e.target.value !== "" && e.target.value !== ticket.subject);
-  };
+  useEffect(() => {
+    if (!ticket) return;
+
+    setCanSave(
+      subject !== ticket.subject ||
+        status !== ticket.status ||
+        priority !== ticket.priority ||
+        severity !== ticket.severity ||
+        requester !== ticket.requesterId ||
+        assignee !== ticket.assigneeId
+    );
+  }, [subject, status, priority, severity, requester, assignee]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,16 +73,23 @@ const EditTicket = ({ ticketId }) => {
 
     // Submit form to firestore
     await submitToDb();
+
+    setCanSave(false);
   };
 
   const validateForm = () => {
+    const subject = formRef.current.elements.subject.value;
+    if (!subject || subject == "") {
+      return false;
+    }
+
     const requester = formRef.current.elements.requester.value;
     if (!requester || requester == "") {
       return false;
     }
 
-    const subject = formRef.current.elements.subject.value;
-    if (!subject || subject == "") {
+    const assignee = formRef.current.elements.assignee.value;
+    if (!assignee || assignee == "") {
       return false;
     }
 
@@ -82,7 +97,15 @@ const EditTicket = ({ ticketId }) => {
   };
 
   const submitToDb = async () => {
-    const formData = new FormData(formRef.current);
+    await updateTicket(
+      ticketId,
+      requester,
+      subject,
+      status,
+      priority,
+      severity,
+      assignee
+    );
   };
 
   if (loading) return null;
@@ -95,8 +118,8 @@ const EditTicket = ({ ticketId }) => {
           <input
             type="text"
             name="subject"
-            defaultValue={ticket.subject}
-            onChange={handleSubjectChange}
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
             className="ticket-form__subject ticket-form__subject--edit"
           />
         </div>
@@ -128,19 +151,8 @@ const EditTicket = ({ ticketId }) => {
 
       <div className="ticket-form__content">
         <div className="ticket-form__box ticket-form__users ">
-          <TicketSelect
-            label="Requester"
-            name="requester"
-            options={requesterList}
-            defaultValue={ticket.requesterId}
-          />
-
-          <TicketSelect
-            label="Assignee"
-            name="assignee"
-            options={assigneeList}
-            defaultValue={ticket.assigneeId}
-          />
+          <TicketRequester selected={requester} setSelected={setRequester} />
+          <TicketAssignee selected={assignee} setSelected={setAssignee} />
         </div>
 
         <div className="ticket-form__details">

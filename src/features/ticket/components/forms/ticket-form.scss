@@ -81,6 +81,15 @@
     width: 75%;
   }
 
+  &__select-title {
+    @include flexrow(space-between, center);
+  }
+
+  &__highlight {
+    @include font(0.5, normal, $basic-blue);
+    cursor: pointer;
+  }
+
   &__field {
     @include flexcol($gap: 0.5em);
   }

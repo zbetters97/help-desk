@@ -21,20 +21,18 @@ const ForgotPasswordButton = ({ setError }) => {
 
   return (
     <div>
-      {success ? (
-        <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+      <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        {success ? (
           <SuccessAlert
             message="Reset email sent!"
             link="Go to login"
             icon={faArrowRight}
             onClick={() => setIsModalOpen(false)}
           />
-        </Modal>
-      ) : (
-        <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+        ) : (
           <PasswordReset isModalOpen={isModalOpen} setSuccess={setSuccess} />
-        </Modal>
-      )}
+        )}
+      </Modal>
 
       <div className="auth__reset">
         <p>Forgot password?</p>

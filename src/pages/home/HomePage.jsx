@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { formatDateMDYShort } from "src/utils/date";
+import { formatDateMDYShort, formatTime } from "src/utils/date";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
+import {
+  faArrowDownWideShort,
+  faArrowUpWideShort,
+} from "@fortawesome/free-solid-svg-icons";
 import "./home-page.scss";
 
 const HomePage = () => {
@@ -15,6 +20,8 @@ const HomePage = () => {
   const { getAllTickets, getTicketsByStatus, getTicketsByAssignee } =
     useTicketContext();
 
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedValue, setSortedValue] = useState("");
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
@@ -32,7 +39,7 @@ const HomePage = () => {
           ? await getTicketsByAssignee(globalUser?.uid || "")
           : await getAllTickets();
 
-      // Add a checked property to each ticket object
+      // Add a checked flag to each ticket object
       fetchedTickets = fetchedTickets.map((ticket) => ({
         ...ticket,
         checked: false,
@@ -54,6 +61,25 @@ const HomePage = () => {
     setTickets([...tickets]);
   };
 
+  const handleSort = (sortValue) => {
+    setTickets(
+      [...tickets].sort((a, b) => {
+        if (sortOrder === "asc") {
+          return a[sortValue.toLowerCase()].localeCompare(
+            b[sortValue.toLowerCase()]
+          );
+        } else {
+          return b[sortValue.toLowerCase()].localeCompare(
+            a[sortValue.toLowerCase()]
+          );
+        }
+      })
+    );
+
+    setSortedValue(sortValue);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
   if (!tickets) return null;
 
   return (
@@ -68,14 +94,55 @@ const HomePage = () => {
               content={<div className="tickets-table__status" />}
               classes="tickets-table__status-indicator"
             />
-            <TableHead content="Status" classes="tickets-table__status-cell" />
-            <TableHead content="Created" />
-            <TableHead content="Subject" />
-            <TableHead content="Requester" />
-            <TableHead content="Assignee" />
-            <TableHead content="Priority" />
-            <TableHead content="Severity" />
-            <TableHead content="Last Updated" />
+            <TableHead
+              content="Status"
+              classes="tickets-table__status-cell"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Created"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Subject"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Requester"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Assignee"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Priority"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Severity"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
+            <TableHead
+              content="Last Updated"
+              handleSort={handleSort}
+              sortedValue={sortedValue}
+              sortOrder={sortOrder}
+            />
           </tr>
         </thead>
 
@@ -83,7 +150,14 @@ const HomePage = () => {
           {tickets.map((ticket) => {
             const link = `/ticketing/${ticket.id}`;
             const status = `tickets-table__status--${ticket.status.toLowerCase()}`;
-            const date = formatDateMDYShort(ticket.createdAt.toDate());
+
+            const createdAtDate = `${formatDateMDYShort(
+              ticket.createdAt.toDate()
+            )} ${formatTime(ticket.createdAt.toDate())}`;
+
+            const updatedAtDate = `${formatDateMDYShort(
+              ticket.lastUpdated.toDate()
+            )} ${formatTime(ticket.lastUpdated.toDate())}`;
 
             return (
               <tr
@@ -107,7 +181,7 @@ const HomePage = () => {
                   content={ticket.status}
                   classes="tickets-table__status-cell"
                 />
-                <TableData content={date} />
+                <TableData content={createdAtDate} />
                 <TableData content={ticket.subject} />
                 <TableData
                   content={ticket.requester}
@@ -119,6 +193,7 @@ const HomePage = () => {
                 />
                 <TableData content={ticket.priority} />
                 <TableData content={ticket.severity} />
+                <TableData content={updatedAtDate} />
               </tr>
             );
           })}
@@ -128,10 +203,34 @@ const HomePage = () => {
   );
 };
 
-const TableHead = ({ content, classes }) => {
+const TableHead = ({
+  content,
+  classes,
+  handleSort,
+  sortedValue,
+  sortOrder,
+}) => {
+  const sorted = sortedValue === content;
+
   return (
-    <th className={`tickets-table__cell ${classes}`} role="cell">
-      {content}
+    <th
+      onClick={() => handleSort(content)}
+      className={`tickets-table__cell tickets-table__cell--header ${classes}`}
+      role="cell"
+    >
+      <div className="tickets-table__content">
+        {content}
+        <div>
+          <FontAwesomeIcon
+            icon={
+              sortOrder === "asc" ? faArrowUpWideShort : faArrowDownWideShort
+            }
+            className={`tickets-table__sort-icon tickets-table__sort-icon--${
+              sorted ? "active" : "inactive"
+            }`}
+          />
+        </div>
+      </div>
     </th>
   );
 };

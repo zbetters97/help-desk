@@ -22,6 +22,22 @@
     border-bottom: 1px solid $lighter-gray;
     padding: 0.15em 2em;
     height: 42px;
+
+    &--header {
+      cursor: pointer;
+    }
+  }
+
+  &__content {
+    @include flexrow(initial, center);
+  }
+
+  &__sort-icon {
+    margin-left: 5px;
+
+    &--inactive {
+      visibility: hidden;
+    }
   }
 
   &__checkbox {

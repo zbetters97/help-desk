@@ -1,9 +1,10 @@
 /* 8:00 PM */
 export function formatTime(time) {
-  const formattedTime = new Date(`1970-01-01T${time}Z`).toLocaleTimeString(
-    "en-US",
-    { timeZone: "UTC", hour12: true, hour: "numeric", minute: "numeric" }
-  );
+  const formattedTime = new Date(time).toLocaleTimeString("en-US", {
+    hour12: true,
+    hour: "numeric",
+    minute: "numeric",
+  });
 
   return formattedTime;
 }
