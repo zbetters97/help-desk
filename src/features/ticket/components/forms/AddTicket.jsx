@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { priorityList, severityList, statusList } from "src/data/const";
 import useTicket from "../../hooks/useTicket";
 import TicketSave from "../buttons/TicketSave";
@@ -8,17 +9,28 @@ import TicketTextarea from "../inputs/TicketTextarea";
 import TicketDropdown from "../dropdowns/TicketDropdown";
 import "./ticket-form.scss";
 
-const requesterList = ["User 1", "User 2", "User 3"];
-const assigneeList = ["User 1", "User 2", "User 3"];
-
 const AddTicket = () => {
+  const { getAllUsers } = useAuthContext();
   const { addTicket } = useTicket();
-
-  const formRef = useRef(null);
 
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
+
+  const [requesterList, setRequesterList] = useState([]);
+  const [assigneeList, setAssigneeList] = useState([]);
+
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await getAllUsers();
+      setAssigneeList(users);
+      setRequesterList(users);
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -3,13 +3,13 @@
 
 .nav {
   @include flexcol(center, center);
-  height: 100%;
   background-color: $darker-blue;
+  height: 100%;
 }
 
 .navbar {
-  padding: 1.5em;
   background-color: $dark-blue;
+  padding: 1.5em;
 
   &__list {
     @include flexcol(center, initial, 1em);
@@ -18,5 +18,10 @@
 
   &__item {
     @include font(0.5, normal, $basic-gray);
+
+    &:hover,
+    &[aria-current="page"] {
+      color: $basic-white;
+    }
   }
 }

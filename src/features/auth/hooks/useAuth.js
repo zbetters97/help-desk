@@ -1,5 +1,13 @@
 import { auth, db } from "src/config/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
+} from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   fetchSignInMethodsForEmail,
@@ -11,7 +19,7 @@ import {
 } from "firebase/auth";
 
 const useAuth = () => {
-  const signup = async (firstName, lastName, email, password, setError) => {
+  const signup = async (firstname, lastname, email, password, setError) => {
     try {
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
@@ -20,13 +28,15 @@ const useAuth = () => {
       );
       const newUser = userCredentials.user;
 
-      const displayname = `${firstName} ${lastName}`;
+      const displayname = `${firstname} ${lastname}`;
 
+      // permission: 1 = Admin
       const newUserData = {
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         displayname: displayname.toLowerCase(),
         email: email.toLowerCase(),
+        permission: 1,
         createdAt: new Date(),
       };
 
@@ -109,6 +119,30 @@ const useAuth = () => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const getAllUsers = async () => {
+    try {
+      const usersRef = collection(db, "users");
+
+      const q = query(usersRef, orderBy("lastname", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return [];
+
+      const users = await Promise.all(
+        querySnapshot.docs.map(async (doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        })
+      );
+
+      return users;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getUserById = async (userId) => {
     try {
       const userRef = doc(db, "users", userId);
@@ -134,6 +168,7 @@ const useAuth = () => {
     checkIfEmailExists,
     resetPassword,
 
+    getAllUsers,
     getUserById,
   };
 };

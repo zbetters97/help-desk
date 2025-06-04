@@ -14,8 +14,12 @@ const TicketSelect = ({ label, name, options, defaultValue }) => {
           -- Choose an option --
         </option>
         {options.map((option) => (
-          <option key={option} value={option} className="ticket-form__option">
-            {option}
+          <option
+            key={option.id}
+            value={option.id}
+            className="ticket-form__option"
+          >
+            {option.displayname}
           </option>
         ))}
       </select>

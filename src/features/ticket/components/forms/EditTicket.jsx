@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { priorityList, severityList, statusList } from "src/data/const";
 import TicketSave from "../buttons/TicketSave";
 import TicketSelect from "../inputs/TicketSelect";
@@ -9,16 +10,18 @@ import TicketDropdown from "../dropdowns/TicketDropdown";
 import { useTicketContext } from "../../context/TicketContext";
 import "./ticket-form.scss";
 
-const requesterList = ["User 1", "User 2", "User 3"];
-const assigneeList = ["User 1", "User 2", "User 3"];
-
 const EditTicket = ({ ticketId }) => {
+  const { getAllUsers } = useAuthContext();
   const { getTicketById } = useTicketContext();
+
+  const [loading, setLoading] = useState(true);
 
   const [ticket, setTicket] = useState(null);
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
+  const [requesterList, setRequesterList] = useState([]);
+  const [assigneeList, setAssigneeList] = useState([]);
 
   const [canSave, setCanSave] = useState(false);
 
@@ -26,12 +29,22 @@ const EditTicket = ({ ticketId }) => {
 
   useEffect(() => {
     const fetchTicket = async () => {
+      if (!ticketId) return;
+
+      setLoading(true);
+
       const fetchedTicket = await getTicketById(ticketId);
       setTicket(fetchedTicket);
 
       setStatus(fetchedTicket.status);
       setPriority(fetchedTicket.priority);
       setSeverity(fetchedTicket.severity);
+
+      const users = await getAllUsers();
+      setAssigneeList(users);
+      setRequesterList(users);
+
+      setLoading(false);
     };
 
     fetchTicket();
@@ -72,7 +85,7 @@ const EditTicket = ({ ticketId }) => {
     const formData = new FormData(formRef.current);
   };
 
-  if (!ticket) return null;
+  if (loading) return null;
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="ticket-form">

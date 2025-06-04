@@ -104,6 +104,11 @@
   &__select {
     cursor: pointer;
     background-color: $basic-white;
+    text-transform: capitalize;
+
+    & option {
+      text-transform: capitalize;
+    }
   }
 
   &__textarea {

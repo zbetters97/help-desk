@@ -1,15 +1,20 @@
 import { db } from "src/config/firebase";
+import { useAuthContext } from "src/features/auth/context/AuthContext";
 import {
-  addDoc,
   collection,
   doc,
   getDoc,
   getDocs,
   orderBy,
   query,
+  setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 
 const useTicket = () => {
+  const { getUserById } = useAuthContext();
+
   const addTicket = async (
     requesterId,
     subject,
@@ -32,9 +37,15 @@ const useTicket = () => {
       };
 
       const ticketRef = collection(db, "tickets");
-      const ticketDoc = await addDoc(ticketRef, ticket);
 
-      if (!ticketDoc.id) return false;
+      const ticketIdRef = doc(ticketRef, "id-counter");
+      const idCounter = await getDoc(ticketIdRef);
+      const ticketId = idCounter.data().counter + 1;
+
+      const ticketDocRef = doc(ticketRef, ticketId.toString());
+      await setDoc(ticketDocRef, ticket);
+
+      await updateDoc(ticketIdRef, { counter: ticketId });
 
       return true;
     } catch (error) {
@@ -55,9 +66,14 @@ const useTicket = () => {
 
       const tickets = await Promise.all(
         querySnapshot.docs.map(async (doc) => {
+          const requester = await getUserById(doc.data().requesterId);
+          const assignee = await getUserById(doc.data().assigneeId || "");
+
           return {
             id: doc.id,
             ...doc.data(),
+            requester: requester?.displayname || "",
+            assignee: assignee?.displayname || "",
           };
         })
       );
@@ -86,7 +102,9 @@ const useTicket = () => {
 
   const getTicketsByAssignee = async (assigneeId) => {
     try {
-      if (!userId) return [];
+      if (!assigneeId) return [];
+
+      const assignee = await getUserById(assigneeId);
 
       const ticketRef = collection(db, "tickets");
       const q = query(
@@ -101,9 +119,12 @@ const useTicket = () => {
 
       const tickets = await Promise.all(
         querySnapshot.docs.map(async (doc) => {
+          const requester = await getUserById(doc.data().requesterId);
           return {
             id: doc.id,
             ...doc.data(),
+            requester: requester?.displayname || "",
+            assignee: assignee?.displayname || "",
           };
         })
       );
@@ -146,6 +167,42 @@ const useTicket = () => {
     }
   };
 
+  const getTicketsByStatus = async (status) => {
+    try {
+      if (!status) return [];
+
+      const ticketRef = collection(db, "tickets");
+      const q = query(
+        ticketRef,
+        where("status", "==", status),
+        orderBy("createdAt", "desc")
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return [];
+
+      const tickets = await Promise.all(
+        querySnapshot.docs.map(async (doc) => {
+          const requester = await getUserById(doc.data().requesterId);
+          const assignee = await getUserById(doc.data().assigneeId || "");
+
+          return {
+            id: doc.id,
+            ...doc.data(),
+            requester: requester?.displayname || "",
+            assignee: assignee?.displayname || "",
+          };
+        })
+      );
+
+      return tickets;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  };
+
   return {
     addTicket,
 
@@ -153,6 +210,7 @@ const useTicket = () => {
     getTicketById,
     getTicketsByAssignee,
     getTicketsByRequester,
+    getTicketsByStatus,
   };
 };
 

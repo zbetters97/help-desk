@@ -1,0 +1,66 @@
+@use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
+
+.tickets-table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+
+  &__header {
+    height: 60px;
+  }
+
+  &__row {
+    cursor: pointer;
+
+    &:hover {
+      background-color: $light-gray;
+    }
+  }
+
+  &__cell {
+    border-bottom: 1px solid $lighter-gray;
+    padding: 0.15em 2em;
+    height: 42px;
+  }
+
+  &__checkbox {
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+
+  &__status-indicator {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  &__status-cell {
+    padding-left: 0.5em;
+    height: 100%;
+  }
+
+  &__status {
+    width: 6px;
+    height: 100%;
+
+    &--new {
+      background-color: $basic-red;
+    }
+    &--open {
+      background-color: $basic-yellow;
+    }
+    &--waiting {
+      background-color: $basic-blue;
+    }
+    &--paused {
+      background-color: $basic-gray;
+    }
+    &--resolved {
+      background-color: $basic-green;
+    }
+  }
+
+  &__user {
+    text-transform: capitalize;
+  }
+}
