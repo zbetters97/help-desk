@@ -32,7 +32,10 @@ const TicketRequester = ({ selected, setSelected }) => {
   return (
     <div className="ticket-form__field">
       <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
-        <CreateContact setIsModalOpen={setIsModalOpen} />
+        <CreateContact
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
       </Modal>
 
       <div className="ticket-form__select-title">

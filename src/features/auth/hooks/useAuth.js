@@ -1,5 +1,6 @@
 import { auth, db } from "src/config/firebase";
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -7,6 +8,7 @@ import {
   orderBy,
   query,
   setDoc,
+  where,
 } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
@@ -119,11 +121,57 @@ const useAuth = () => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const addUser = async (email, firstname, lastname) => {
+    try {
+      const user = {
+        email,
+        firstname,
+        lastname,
+        displayname: `${firstname} ${lastname}`,
+        permission: 0,
+        createdAt: new Date(),
+      };
+
+      const userRef = collection(db, "users");
+      const userDoc = await addDoc(userRef, user);
+
+      if (!userDoc) return null;
+
+      return true;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getAllUsers = async () => {
     try {
       const usersRef = collection(db, "users");
 
       const q = query(usersRef, orderBy("lastname", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return [];
+
+      const users = await Promise.all(
+        querySnapshot.docs.map(async (doc) => {
+          return {
+            id: doc.id,
+            ...doc.data(),
+          };
+        })
+      );
+
+      return users;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAdminUsers = async () => {
+    try {
+      const usersRef = collection(db, "users");
+
+      const q = query(usersRef, where("permission", "==", 1));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) return [];
@@ -168,7 +216,9 @@ const useAuth = () => {
     checkIfEmailExists,
     resetPassword,
 
+    addUser,
     getAllUsers,
+    getAdminUsers,
     getUserById,
   };
 };

@@ -22,7 +22,7 @@ const EditTicket = ({ ticketId }) => {
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
   const [requester, setRequester] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [assignee, setAssignee] = useState("none");
 
   const [canSave, setCanSave] = useState(false);
 
@@ -85,11 +85,6 @@ const EditTicket = ({ ticketId }) => {
 
     const requester = formRef.current.elements.requester.value;
     if (!requester || requester == "") {
-      return false;
-    }
-
-    const assignee = formRef.current.elements.assignee.value;
-    if (!assignee || assignee == "") {
       return false;
     }
 

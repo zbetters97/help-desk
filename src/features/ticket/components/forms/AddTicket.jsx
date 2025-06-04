@@ -4,10 +4,10 @@ import useTicket from "../../hooks/useTicket";
 import TicketSave from "../buttons/TicketSave";
 import TicketInput from "../inputs/TicketInput";
 import TicketTextarea from "../inputs/TicketTextarea";
+import TicketAssignee from "../inputs/TicketAssignee";
+import TicketRequester from "../inputs/TicketRequester";
 import TicketDropdown from "../dropdowns/TicketDropdown";
 import "./ticket-form.scss";
-import TicketRequester from "../inputs/TicketRequester";
-import TicketAssignee from "../inputs/TicketAssignee";
 
 const AddTicket = () => {
   const { addTicket } = useTicket();
@@ -15,6 +15,8 @@ const AddTicket = () => {
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
+  const [requester, setRequester] = useState("");
+  const [assignee, setAssignee] = useState("");
 
   const formRef = useRef(null);
 
@@ -54,10 +56,8 @@ const AddTicket = () => {
   const submitToDb = async () => {
     const formData = new FormData(formRef.current);
 
-    const requester = formData.get("requester");
     const subject = formData.get("subject");
     const description = formData.get("description");
-    const assignee = formData.get("assignee") || "";
 
     await addTicket(
       requester,
@@ -111,8 +111,8 @@ const AddTicket = () => {
 
       <div className="ticket-form__content">
         <div className="ticket-form__users ticket-form__box">
-          <TicketRequester />
-          <TicketAssignee />
+          <TicketRequester selected={requester} setSelected={setRequester} />
+          <TicketAssignee selected={assignee} setSelected={setAssignee} />
         </div>
 
         <div className="ticket-form__details ticket-form__box">

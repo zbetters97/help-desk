@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 
 const TicketAssignee = ({ selected, setSelected }) => {
-  const { globalUser } = useAuthContext();
-  const { getAllUsers } = useAuthContext();
+  const { globalUser, getAdminUsers } = useAuthContext();
 
   const [assigneeList, setAssigneeList] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const users = await getAllUsers();
+      const users = await getAdminUsers();
       setAssigneeList(users);
     };
 
@@ -50,9 +49,7 @@ const TicketAssignee = ({ selected, setSelected }) => {
         onChange={handleChange}
         className="ticket-form__select"
       >
-        <option value="" disabled>
-          -- Choose an option --
-        </option>
+        <option value="none">-- Choose an option --</option>
         {assigneeList.map((assignee) => (
           <option
             key={assignee.id}

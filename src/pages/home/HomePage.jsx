@@ -30,7 +30,7 @@ const HomePage = () => {
 
       let fetchedTickets =
         filter === "0"
-          ? await getTicketsByAssignee("")
+          ? await getTicketsByAssignee("none")
           : filter === "1"
           ? await getAllTickets()
           : filter === "2"
@@ -65,10 +65,16 @@ const HomePage = () => {
     setTickets(
       [...tickets].sort((a, b) => {
         if (sortOrder === "asc") {
+          if (sortValue === "Created" || sortValue === "Last Updated")
+            return a.createdAt - b.createdAt;
+
           return a[sortValue.toLowerCase()].localeCompare(
             b[sortValue.toLowerCase()]
           );
         } else {
+          if (sortValue === "Created" || sortValue === "Last Updated")
+            return b.createdAt - a.createdAt;
+
           return b[sortValue.toLowerCase()].localeCompare(
             a[sortValue.toLowerCase()]
           );
