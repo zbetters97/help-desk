@@ -5,7 +5,8 @@
   @include flexcol(initial, stretch);
   background-color: $light-gray;
   width: 100%;
-  height: 100%;
+  height: fit-content;
+  min-height: 100%;
 
   & > div {
     padding: 1em 1.5em;
@@ -63,6 +64,7 @@
     @include flexrow(initial, stretch, 1em);
     padding: 1em;
     width: 100%;
+    height: 100%;
   }
 
   &__box {
@@ -74,6 +76,7 @@
 
   &__users {
     width: 25%;
+    height: fit-content;
   }
 
   &__details {
@@ -122,5 +125,41 @@
 
   &__textarea {
     height: 7em;
+  }
+
+  &__response-buttons {
+    @include flexrow(initial, center, 1em);
+    margin-left: auto;
+  }
+
+  &__cancel,
+  &__publish {
+    border-radius: $border-sm;
+    padding: 0.5em 0.75em;
+    width: fit-content;
+
+    &[disabled] {
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel {
+    @include font(0.5, normal, $basic-blue);
+    border: 1px solid $basic-blue;
+
+    &[disabled] {
+      border-color: $lighter-gray;
+      color: $basic-gray;
+    }
+  }
+
+  &__publish {
+    @include font(0.5, normal, $basic-white);
+    background-color: $basic-blue;
+
+    &[disabled] {
+      background-color: $basic-gray;
+      color: $darker-gray;
+    }
   }
 }

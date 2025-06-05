@@ -4,19 +4,22 @@ import useTicket from "../../hooks/useTicket";
 import TicketSave from "../buttons/TicketSave";
 import TicketInput from "../inputs/TicketInput";
 import TicketTextarea from "../inputs/TicketTextarea";
-import TicketAssignee from "../inputs/TicketAssignee";
-import TicketRequester from "../inputs/TicketRequester";
+import TicketAssignee from "../dropdowns/TicketAssignee";
+import TicketRequester from "../dropdowns/TicketRequester";
 import TicketDropdown from "../dropdowns/TicketDropdown";
 import "./ticket-form.scss";
+import { useNavigate } from "react-router-dom";
 
 const AddTicket = () => {
   const { addTicket } = useTicket();
+
+  const navigate = useNavigate();
 
   const [status, setStatus] = useState(statusList[0]);
   const [priority, setPriority] = useState(priorityList[0]);
   const [severity, setSeverity] = useState(severityList[0]);
   const [requester, setRequester] = useState("");
-  const [assignee, setAssignee] = useState("");
+  const [assignee, setAssignee] = useState("none");
 
   const formRef = useRef(null);
 
@@ -32,6 +35,8 @@ const AddTicket = () => {
     await submitToDb();
 
     resetForm();
+
+    navigate("/dashboard/1");
   };
 
   const validateForm = () => {
@@ -75,6 +80,8 @@ const AddTicket = () => {
     setStatus(statusList[0]);
     setPriority(priorityList[0]);
     setSeverity(severityList[0]);
+    setRequester("");
+    setAssignee("none");
 
     // Reset form values
     formRef.current.reset();

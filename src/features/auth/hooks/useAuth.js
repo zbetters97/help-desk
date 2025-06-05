@@ -34,8 +34,8 @@ const useAuth = () => {
 
       // permission: 1 = Admin
       const newUserData = {
-        firstname,
-        lastname,
+        firstname: firstname.toLowerCase(),
+        lastname: lastname.toLowerCase(),
         displayname: displayname.toLowerCase(),
         email: email.toLowerCase(),
         permission: 1,
@@ -123,11 +123,13 @@ const useAuth = () => {
 
   const addUser = async (email, firstname, lastname) => {
     try {
+      const displayname = `${firstname} ${lastname}`;
+
       const user = {
         email,
-        firstname,
-        lastname,
-        displayname: `${firstname} ${lastname}`,
+        firstname: firstname.toLowerCase(),
+        lastname: lastname.toLowerCase(),
+        displayname: displayname.toLowerCase(),
         permission: 0,
         createdAt: new Date(),
       };

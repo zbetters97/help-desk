@@ -1,6 +1,7 @@
 import { db } from "src/config/firebase";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import {
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -25,10 +26,29 @@ const useTicket = () => {
     assigneeId = ""
   ) => {
     try {
+      const chatDoc = collection(db, "chats");
+      const newChatRef = doc(chatDoc);
+
+      const id = Date.now().toString();
+
+      await setDoc(newChatRef, {
+        messages: [
+          {
+            id,
+            senderId: requesterId,
+            message: description,
+            createdAt: new Date(),
+          },
+        ],
+        createdAt: new Date(),
+      });
+
+      const chatId = newChatRef.id;
+
       const ticket = {
         requesterId,
         subject,
-        description,
+        chatId,
         status,
         priority,
         severity,
@@ -77,6 +97,29 @@ const useTicket = () => {
 
       const ticketRef = doc(db, "tickets", ticketId);
       await updateDoc(ticketRef, ticket);
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  const addMessage = async (chatId, senderId, message) => {
+    try {
+      if (!message) return false;
+
+      const id = Date.now().toString();
+      const chatRef = doc(db, "chats", chatId);
+
+      await updateDoc(chatRef, {
+        messages: arrayUnion({
+          id,
+          senderId,
+          message,
+          createdAt: new Date(),
+        }),
+      });
 
       return true;
     } catch (error) {
@@ -234,15 +277,47 @@ const useTicket = () => {
     }
   };
 
+  const getTicketChats = async (chatId) => {
+    try {
+      const chatRef = doc(db, "chats", chatId);
+      const chatDoc = await getDoc(chatRef);
+
+      if (!chatDoc.exists()) return [];
+
+      const messages = await Promise.all(
+        chatDoc.data().messages.map(async (message) => {
+          const sender = await getUserById(message.senderId);
+
+          return {
+            id: message.id,
+            message: message.message,
+            firstname: sender?.firstname || "",
+            lastname: sender?.lastname || "",
+            displayname: sender?.displayname || "",
+            createdAt: message.createdAt,
+          };
+        })
+      );
+
+      return messages;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  };
+
   return {
     addTicket,
     updateTicket,
+    addMessage,
 
     getAllTickets,
     getTicketById,
     getTicketsByAssignee,
     getTicketsByRequester,
     getTicketsByStatus,
+
+    getTicketChats,
   };
 };
 

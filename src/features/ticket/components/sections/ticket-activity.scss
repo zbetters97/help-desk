@@ -1,0 +1,50 @@
+@use "src/styles/abstracts/mixins" as *;
+@use "src/styles/abstracts/variables" as *;
+
+.ticket-activity {
+  &__title {
+    @include font(0.5, normal);
+  }
+
+  &__message {
+    @include flexrow(initial, initial, 0.75em);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $lighter-gray;
+      padding-bottom: 1.5em;
+    }
+  }
+
+  &__avatar {
+    @include font(0.35);
+    border-radius: 50%;
+    background-color: $lighter-gray;
+    padding: 0.5em;
+    width: fit-content;
+    height: fit-content;
+    text-transform: uppercase;
+  }
+
+  &__content {
+    @include flexcol(initial, initial, 1em);
+  }
+
+  &__header {
+    @include flexrow(initial, center, 0.5em);
+  }
+
+  &__name {
+    @include font(0.5, 600);
+    text-transform: capitalize;
+  }
+
+  &__date {
+    @include font(0.35, normal, $darker-gray);
+  }
+
+  &__text {
+    @include font(0.5, normal);
+    padding-left: 0.5em;
+    white-space: pre-line;
+  }
+}

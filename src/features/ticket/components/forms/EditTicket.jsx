@@ -3,18 +3,18 @@ import { faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { priorityList, severityList, statusList } from "src/data/const";
 import TicketSave from "../buttons/TicketSave";
-import TicketTextarea from "../inputs/TicketTextarea";
-import TicketAssignee from "../inputs/TicketAssignee";
-import TicketRequester from "../inputs/TicketRequester";
+import TicketResponse from "../inputs/TicketResponse";
+import TicketActivity from "../sections/TicketActivity";
+import TicketAssignee from "../dropdowns/TicketAssignee";
 import TicketDropdown from "../dropdowns/TicketDropdown";
+import TicketRequester from "../dropdowns/TicketRequester";
 import { useTicketContext } from "../../context/TicketContext";
 import "./ticket-form.scss";
 
 const EditTicket = ({ ticketId }) => {
-  const { getTicketById, updateTicket } = useTicketContext();
+  const { getTicketById, updateTicket, getTicketChats } = useTicketContext();
 
   const [loading, setLoading] = useState(true);
-
   const [ticket, setTicket] = useState(null);
 
   const [subject, setSubject] = useState("");
@@ -23,8 +23,9 @@ const EditTicket = ({ ticketId }) => {
   const [severity, setSeverity] = useState(severityList[0]);
   const [requester, setRequester] = useState("");
   const [assignee, setAssignee] = useState("none");
-
   const [canSave, setCanSave] = useState(false);
+
+  const [chats, setChats] = useState([]);
 
   const formRef = useRef(null);
 
@@ -43,6 +44,12 @@ const EditTicket = ({ ticketId }) => {
       setSeverity(fetchedTicket.severity);
       setRequester(fetchedTicket.requesterId);
       setAssignee(fetchedTicket.assigneeId);
+
+      const fetchedChats = await getTicketChats(fetchedTicket.chatId);
+      const sortedChats = fetchedChats.sort(
+        (a, b) => b.createdAt - a.createdAt
+      );
+      setChats(sortedChats);
 
       setLoading(false);
     };
@@ -151,17 +158,8 @@ const EditTicket = ({ ticketId }) => {
         </div>
 
         <div className="ticket-form__details">
-          <div className=" ticket-form__box ticket-form__response">
-            <TicketTextarea
-              label="Public Response"
-              name="response"
-              placeholder="Type your response here..."
-            />
-          </div>
-
-          <div className=" ticket-form__box ticket-form__activity">
-            <h3>Ticket activity</h3>
-          </div>
+          <TicketResponse chatId={ticket.chatId} />
+          <TicketActivity chats={chats} />
         </div>
       </div>
     </form>
