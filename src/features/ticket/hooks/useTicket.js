@@ -277,6 +277,56 @@ const useTicket = () => {
     }
   };
 
+  const getAllTicketCounts = async () => {
+    try {
+      const ticketRef = collection(db, "tickets");
+      const querySnapshot = await getDocs(ticketRef);
+
+      if (querySnapshot.empty) return 0;
+
+      return querySnapshot.size;
+    } catch (error) {
+      console.error(error.message);
+      return 0;
+    }
+  };
+
+  const getTicketCountByAssignee = async (assigneeId) => {
+    try {
+      if (!assigneeId) return 0;
+
+      const ticketRef = collection(db, "tickets");
+      const q = query(ticketRef, where("assigneeId", "==", assigneeId));
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return 0;
+
+      return querySnapshot.size;
+    } catch (error) {
+      console.error(error.message);
+      return 0;
+    }
+  };
+
+  const getTicketCountByStatus = async (status) => {
+    try {
+      if (!status) return 0;
+
+      const ticketRef = collection(db, "tickets");
+      const q = query(ticketRef, where("status", "==", status));
+
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) return 0;
+
+      return querySnapshot.size;
+    } catch (error) {
+      console.error(error.message);
+      return 0;
+    }
+  };
+
   const getTicketChats = async (chatId) => {
     try {
       const chatRef = doc(db, "chats", chatId);
@@ -316,6 +366,10 @@ const useTicket = () => {
     getTicketsByAssignee,
     getTicketsByRequester,
     getTicketsByStatus,
+
+    getAllTicketCounts,
+    getTicketCountByAssignee,
+    getTicketCountByStatus,
 
     getTicketChats,
   };

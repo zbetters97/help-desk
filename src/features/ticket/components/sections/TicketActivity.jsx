@@ -4,7 +4,7 @@ import "./ticket-activity.scss";
 const TicketActivity = ({ chats }) => {
   return (
     <div className=" ticket-form__box ticket-activity">
-      <h3 className="ticket-activity__title">Ticket activity</h3>
+      <h3 className="ticket-activity__title">{`Ticket activity (${chats.length})`}</h3>
 
       {chats.map((chat) => {
         const initials =

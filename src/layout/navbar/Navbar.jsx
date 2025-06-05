@@ -1,7 +1,38 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuthContext } from "src/features/auth/context/AuthContext";
+import { useTicketContext } from "src/features/ticket/context/TicketContext";
 import "./navbar.scss";
 
 const Navbar = () => {
+  const { globalUser } = useAuthContext();
+  const {
+    getAllTicketCounts,
+    getTicketCountByAssignee,
+    getTicketCountByStatus,
+  } = useTicketContext();
+
+  const [unassignedTickets, setUnassignedTickets] = useState(0);
+  const [allTickets, setAllTickets] = useState(0);
+  const [openTickets, setOpenTickets] = useState(0);
+  const [myTickets, setMyTickets] = useState(0);
+
+  useEffect(() => {
+    const fetchTicketCounts = async () => {
+      const unassignedTickets = await getTicketCountByAssignee("none");
+      const allTickets = await await getAllTicketCounts();
+      const openTickets = await getTicketCountByStatus("Open");
+      const myTickets = await getTicketCountByAssignee(globalUser.uid);
+
+      setUnassignedTickets(unassignedTickets);
+      setAllTickets(allTickets);
+      setOpenTickets(openTickets);
+      setMyTickets(myTickets);
+    };
+
+    fetchTicketCounts();
+  }, [globalUser]);
+
   return (
     <header className="nav">
       <nav className="navbar">
@@ -12,7 +43,7 @@ const Navbar = () => {
               className="navbar__item"
               aria-current="page"
             >
-              Unassigned Tickets
+              {`Unassigned Tickets (${unassignedTickets})`}
             </NavLink>
           </li>
           <li>
@@ -21,7 +52,7 @@ const Navbar = () => {
               className="navbar__item"
               aria-current="page"
             >
-              All Tickets
+              {`All Tickets (${allTickets})`}
             </NavLink>
           </li>
           <li>
@@ -30,7 +61,7 @@ const Navbar = () => {
               className="navbar__item"
               aria-current="page"
             >
-              Open Tickets
+              {`Open Tickets (${openTickets})`}
             </NavLink>
           </li>
           <li>
@@ -39,7 +70,7 @@ const Navbar = () => {
               className="navbar__item"
               aria-current="page"
             >
-              My Tickets
+              {`My Tickets (${myTickets})`}
             </NavLink>
           </li>
         </ul>
