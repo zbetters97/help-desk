@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { db } from "src/config/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import { faTicket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { priorityList, severityList, statusList } from "src/data/const";
 import TicketSave from "../buttons/TicketSave";
 import TicketResponse from "../inputs/TicketResponse";
@@ -12,7 +15,8 @@ import { useTicketContext } from "../../context/TicketContext";
 import "./ticket-form.scss";
 
 const EditTicket = ({ ticketId }) => {
-  const { getTicketById, updateTicket, getTicketChats } = useTicketContext();
+  const { getUserById } = useAuthContext();
+  const { getTicketById, updateTicket } = useTicketContext();
 
   const [loading, setLoading] = useState(true);
   const [ticket, setTicket] = useState(null);
@@ -23,11 +27,73 @@ const EditTicket = ({ ticketId }) => {
   const [severity, setSeverity] = useState(severityList[0]);
   const [requester, setRequester] = useState("");
   const [assignee, setAssignee] = useState("none");
+
   const [canSave, setCanSave] = useState(false);
 
   const [chats, setChats] = useState([]);
 
-  const formRef = useRef(null);
+  useEffect(() => {
+    if (!ticket) {
+      setCanSave(false);
+      return;
+    }
+    setCanSave(
+      subject !== ticket.subject ||
+        status !== ticket.status ||
+        priority !== ticket.priority ||
+        severity !== ticket.severity ||
+        requester !== ticket.requesterId ||
+        assignee !== ticket.assigneeId
+    );
+  }, [ticket, subject, status, priority, severity, requester, assignee]);
+
+  useEffect(() => {
+    if (!ticket?.chatId) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, "chats", ticket.chatId),
+      async (docSnap) => {
+        if (!docSnap.exists()) {
+          setChats([]);
+          return;
+        }
+
+        const messages = docSnap.data().messages || [];
+        if (messages.length === 0) {
+          setChats([]);
+          return;
+        }
+
+        const senderIds = [...new Set(messages.map((m) => m.senderId))];
+        const users = await Promise.all(senderIds.map(getUserById));
+
+        const userMap = {};
+        senderIds.forEach((id, idx) => {
+          userMap[id] = users[idx];
+        });
+
+        const fetchedChats = messages.map((message) => {
+          const sender = userMap[message.senderId] || {};
+
+          return {
+            id: message.id,
+            message: message.message,
+            firstname: sender.firstname || "",
+            lastname: sender.lastname || "",
+            displayname: sender.displayname || "",
+            createdAt: message.createdAt,
+          };
+        });
+
+        setChats(fetchedChats.sort((a, b) => b.createdAt - a.createdAt));
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [ticket, getUserById]);
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -45,60 +111,25 @@ const EditTicket = ({ ticketId }) => {
       setRequester(fetchedTicket.requesterId);
       setAssignee(fetchedTicket.assigneeId);
 
-      const fetchedChats = await getTicketChats(fetchedTicket.chatId);
-      const sortedChats = fetchedChats.sort(
-        (a, b) => b.createdAt - a.createdAt
-      );
-      setChats(sortedChats);
-
       setLoading(false);
     };
 
     fetchTicket();
-  }, [ticketId]);
+  }, [ticketId, getTicketById]);
 
-  useEffect(() => {
-    if (!ticket) return;
-
-    setCanSave(
-      subject !== ticket.subject ||
-        status !== ticket.status ||
-        priority !== ticket.priority ||
-        severity !== ticket.severity ||
-        requester !== ticket.requesterId ||
-        assignee !== ticket.assigneeId
-    );
-  }, [subject, status, priority, severity, requester, assignee]);
+  const validateForm = () => {
+    if (subject === "") return false;
+    if (requester === "") return false;
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
     if (!validateForm()) {
       return;
     }
 
-    // Submit form to firestore
-    await submitToDb();
-
-    setCanSave(false);
-  };
-
-  const validateForm = () => {
-    const subject = formRef.current.elements.subject.value;
-    if (!subject || subject == "") {
-      return false;
-    }
-
-    const requester = formRef.current.elements.requester.value;
-    if (!requester || requester == "") {
-      return false;
-    }
-
-    return true;
-  };
-
-  const submitToDb = async () => {
     await updateTicket(
       ticketId,
       requester,
@@ -108,12 +139,14 @@ const EditTicket = ({ ticketId }) => {
       severity,
       assignee
     );
+
+    setCanSave(false);
   };
 
   if (loading) return null;
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="ticket-form">
+    <form onSubmit={handleSubmit} className="ticket-form">
       <div className="ticket-form__header">
         <div className="ticket-form__header__subject">
           <FontAwesomeIcon icon={faTicket} className="ticket-form__icon" />
