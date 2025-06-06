@@ -23,9 +23,11 @@ const TicketRows = ({ tickets, setTickets, columnOrder, columnData }) => {
           </div>
         );
       case "created":
-        return `${formatDateMDYShort(ticket.createdAt.toDate())} ${formatTime(
-          ticket.createdAt.toDate()
+        const createdAt = ticket.createdAt.toDate();
+        const createdTime = `${formatDateMDYShort(createdAt)} ${formatTime(
+          createdAt
         )}`;
+        return createdTime;
       case "subject":
         return ticket.subject;
       case "requester":
@@ -37,9 +39,11 @@ const TicketRows = ({ tickets, setTickets, columnOrder, columnData }) => {
       case "severity":
         return ticket.severity;
       case "updated":
-        return `${formatDateMDYShort(ticket.lastUpdated.toDate())} ${formatTime(
-          ticket.lastUpdated.toDate()
+        const lastUpdated = ticket.lastUpdated.toDate();
+        const updatedTime = `${formatDateMDYShort(lastUpdated)} ${formatTime(
+          lastUpdated
         )}`;
+        return updatedTime;
       default:
         return null;
     }
