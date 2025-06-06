@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { closestCorners, DndContext } from "@dnd-kit/core";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import TicketRows from "src/features/ticket/components/table/TicketRows";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
 import TicketColumns from "src/features/ticket/components/table/TicketColumns";
+import {
+  arrayMove,
+  horizontalListSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
 import "./home-page.scss";
 
 const HomePage = () => {
@@ -15,7 +21,6 @@ const HomePage = () => {
   const filter = params?.filter;
 
   const [tickets, setTickets] = useState([]);
-
   const [columnOrder, setColumnOrder] = useState([
     "checkbox",
     "status",
@@ -87,29 +92,49 @@ const HomePage = () => {
     },
   };
 
+  const handleDragEnd = (e) => {
+    const { active, over } = e;
+    if (active.id === over.id) {
+      return;
+    }
+
+    setColumnOrder((columns) => {
+      const oldIndex = columns.indexOf(active.id);
+      const newIndex = columns.indexOf(over.id);
+      return arrayMove(columns, oldIndex, newIndex);
+    });
+  };
+
   if (!tickets) return null;
 
   return (
     <section className="home">
-      <table role="table" className="tickets-table">
-        <thead className="tickets-table__header" role="rowgroup">
-          <TicketColumns
-            tickets={tickets}
-            setTickets={setTickets}
-            columnData={columnData}
-            columnOrder={columnOrder}
-            setColumnOrder={setColumnOrder}
-          />
-        </thead>
-        <tbody role="rowgroup">
-          <TicketRows
-            tickets={tickets}
-            setTickets={setTickets}
-            columnOrder={columnOrder}
-            columnData={columnData}
-          />
-        </tbody>
-      </table>
+      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={columnOrder}
+          strategy={horizontalListSortingStrategy}
+        >
+          <table role="table" className="tickets-table">
+            <thead className="tickets-table__header" role="rowgroup">
+              <TicketColumns
+                tickets={tickets}
+                setTickets={setTickets}
+                columnData={columnData}
+                columnOrder={columnOrder}
+                setColumnOrder={setColumnOrder}
+              />
+            </thead>
+            <tbody role="rowgroup">
+              <TicketRows
+                tickets={tickets}
+                setTickets={setTickets}
+                columnOrder={columnOrder}
+                columnData={columnData}
+              />
+            </tbody>
+          </table>
+        </SortableContext>
+      </DndContext>
     </section>
   );
 };

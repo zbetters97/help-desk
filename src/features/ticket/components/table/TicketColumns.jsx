@@ -4,6 +4,8 @@ import {
   faArrowDownWideShort,
   faArrowUpWideShort,
 } from "@fortawesome/free-solid-svg-icons";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 const TicketColumns = ({
   tickets,
@@ -45,8 +47,8 @@ const TicketColumns = ({
       {columnOrder.map((column) => (
         <TableHead
           key={column}
-          content={columnData[column].content}
-          classes={columnData[column].classes}
+          id={column}
+          column={columnData[column]}
           handleSort={handleSort}
           sortedValue={sortedValue}
           sortOrder={sortOrder}
@@ -56,23 +58,28 @@ const TicketColumns = ({
   );
 };
 
-const TableHead = ({
-  content,
-  classes,
-  handleSort,
-  sortedValue,
-  sortOrder,
-}) => {
-  const sorted = sortedValue === content;
+const TableHead = ({ id, column, handleSort, sortedValue, sortOrder }) => {
+  const sorted = sortedValue === column.content;
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: id });
+
+  const styles = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
 
   return (
     <th
-      onClick={() => handleSort(content)}
-      className={`tickets-table__cell tickets-table__cell--header ${classes}`}
+      onClick={() => handleSort(column.content)}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className={`tickets-table__cell tickets-table__cell--header ${column.classes}`}
       role="cell"
     >
-      <div className="tickets-table__content">
-        {content}
+      <div style={styles} className="tickets-table__content">
+        {column.content}
         <div>
           <FontAwesomeIcon
             icon={
