@@ -1,19 +1,13 @@
 import { useState } from "react";
+import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/sortable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
   faArrowUpWideShort,
 } from "@fortawesome/free-solid-svg-icons";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
-const TicketColumns = ({
-  tickets,
-  setTickets,
-  columnOrder,
-  setColumnOrder,
-  columnData,
-}) => {
+const TicketColumns = ({ tickets, setTickets, columnOrder, columnData }) => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedValue, setSortedValue] = useState("");
 
@@ -62,7 +56,10 @@ const TableHead = ({ id, column, handleSort, sortedValue, sortOrder }) => {
   const sorted = sortedValue === column.content;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: id });
+    useSortable({
+      id: id,
+      activationConstraint: { distance: 8 },
+    });
 
   const styles = {
     transition,
@@ -75,10 +72,11 @@ const TableHead = ({ id, column, handleSort, sortedValue, sortOrder }) => {
       ref={setNodeRef}
       {...attributes}
       {...listeners}
+      style={styles}
       className={`tickets-table__cell tickets-table__cell--header ${column.classes}`}
       role="cell"
     >
-      <div style={styles} className="tickets-table__content">
+      <div className="tickets-table__content">
         {column.content}
         <div>
           <FontAwesomeIcon

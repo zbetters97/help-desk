@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { closestCorners, DndContext } from "@dnd-kit/core";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import TicketRows from "src/features/ticket/components/table/TicketRows";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
@@ -10,6 +9,13 @@ import {
   horizontalListSortingStrategy,
   SortableContext,
 } from "@dnd-kit/sortable";
+import {
+  closestCorners,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import "./home-page.scss";
 
 const HomePage = () => {
@@ -83,14 +89,24 @@ const HomePage = () => {
     },
     priority: {
       content: "Priority",
+      classes: "tickets-table__property",
     },
     severity: {
       content: "Severity",
+      classes: "tickets-table__property",
     },
     updated: {
       content: "Last Updated",
     },
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
+  );
 
   const handleDragEnd = (e) => {
     const { active, over } = e;
@@ -109,7 +125,11 @@ const HomePage = () => {
 
   return (
     <section className="home">
-      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext
           items={columnOrder}
           strategy={horizontalListSortingStrategy}
@@ -121,7 +141,6 @@ const HomePage = () => {
                 setTickets={setTickets}
                 columnData={columnData}
                 columnOrder={columnOrder}
-                setColumnOrder={setColumnOrder}
               />
             </thead>
             <tbody role="rowgroup">

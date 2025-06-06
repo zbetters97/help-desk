@@ -45,9 +45,14 @@
     cursor: pointer;
   }
 
+  &__property {
+    text-transform: capitalize;
+  }
+
   &__status {
     width: 100%;
     height: 100%;
+    text-transform: capitalize;
 
     &::before {
       display: inline-block;

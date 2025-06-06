@@ -90,7 +90,7 @@ const TicketCheckbox = ({ ticket, tickets, setTickets }) => {
 
 const TableData = ({ content, classes }) => {
   return (
-    <td className={`tickets-table__cell ${classes}`} role="cell">
+    <td className={`tickets-table__cell ${classes || ""}`} role="cell">
       {content}
     </td>
   );
