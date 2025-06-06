@@ -45,33 +45,32 @@
     cursor: pointer;
   }
 
-  &__status-indicator {
-    padding-right: 0;
-    padding-left: 0;
-  }
-
-  &__status-cell {
-    padding-left: 0.5em;
-    height: 100%;
-  }
-
   &__status {
-    width: 6px;
+    width: 100%;
     height: 100%;
 
-    &--new {
+    &::before {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+      width: 6px;
+      height: 100%;
+      content: "";
+    }
+
+    &--new::before {
       background-color: $basic-red;
     }
-    &--open {
+    &--open::before {
       background-color: $basic-yellow;
     }
-    &--waiting {
+    &--waiting::before {
       background-color: $basic-blue;
     }
-    &--paused {
+    &--paused::before {
       background-color: $basic-gray;
     }
-    &--resolved {
+    &--resolved::before {
       background-color: $basic-green;
     }
   }

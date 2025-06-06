@@ -284,7 +284,7 @@ const useTicket = () => {
 
       if (querySnapshot.empty) return 0;
 
-      return querySnapshot.size;
+      return querySnapshot.size - 1;
     } catch (error) {
       console.error(error.message);
       return 0;

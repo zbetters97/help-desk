@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { db } from "src/config/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
 import "./navbar.scss";
@@ -18,7 +20,10 @@ const Navbar = () => {
   const [myTickets, setMyTickets] = useState(0);
 
   useEffect(() => {
-    const fetchTicketCounts = async () => {
+    // Update ticket counts on database changes
+    const unsubscribe = onSnapshot(collection(db, "tickets"), async () => {
+      if (!globalUser) return;
+
       const unassignedTickets = await getTicketCountByAssignee("none");
       const allTickets = await await getAllTicketCounts();
       const openTickets = await getTicketCountByStatus("Open");
@@ -28,9 +33,9 @@ const Navbar = () => {
       setAllTickets(allTickets);
       setOpenTickets(openTickets);
       setMyTickets(myTickets);
-    };
+    });
 
-    fetchTicketCounts();
+    return () => unsubscribe();
   }, [globalUser]);
 
   return (
