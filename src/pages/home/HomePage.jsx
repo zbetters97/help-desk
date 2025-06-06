@@ -19,7 +19,7 @@ import {
 import "./home-page.scss";
 
 const HomePage = () => {
-  const { globalUser } = useAuthContext();
+  const { globalUser, updateUserColumns } = useAuthContext();
   const { getAllTickets, getTicketsByStatus, getTicketsByAssignee } =
     useTicketContext();
 
@@ -29,8 +29,8 @@ const HomePage = () => {
   const [tickets, setTickets] = useState([]);
   const [columnOrder, setColumnOrder] = useState([
     "checkbox",
-    "status",
     "created",
+    "status",
     "subject",
     "requester",
     "assignee",
@@ -42,6 +42,8 @@ const HomePage = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       if (!globalUser) return;
+
+      setColumnOrder(globalUser.columns);
 
       let fetchedTickets =
         filter === "0"
@@ -108,7 +110,7 @@ const HomePage = () => {
     })
   );
 
-  const handleDragEnd = (e) => {
+  const handleDragEnd = async (e) => {
     const { active, over } = e;
     if (active.id === over.id) {
       return;
@@ -117,7 +119,10 @@ const HomePage = () => {
     setColumnOrder((columns) => {
       const oldIndex = columns.indexOf(active.id);
       const newIndex = columns.indexOf(over.id);
-      return arrayMove(columns, oldIndex, newIndex);
+
+      const newOrder = arrayMove(columns, oldIndex, newIndex);
+      updateUserColumns(globalUser.uid, newOrder);
+      return newOrder;
     });
   };
 

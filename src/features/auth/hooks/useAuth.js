@@ -40,6 +40,17 @@ const useAuth = () => {
         email: email.toLowerCase(),
         permission: 1,
         createdAt: new Date(),
+        columns: [
+          "checkbox",
+          "status",
+          "created",
+          "subject",
+          "requester",
+          "assignee",
+          "priority",
+          "severity",
+          "updated",
+        ],
       };
 
       const userRef = doc(db, "users", newUser.uid);
@@ -210,6 +221,15 @@ const useAuth = () => {
     }
   };
 
+  const updateUserColumns = async (userId, columns) => {
+    try {
+      const userRef = doc(db, "users", userId);
+      await setDoc(userRef, { columns }, { merge: true });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     signup,
     login,
@@ -222,6 +242,8 @@ const useAuth = () => {
     getAllUsers,
     getAdminUsers,
     getUserById,
+
+    updateUserColumns,
   };
 };
 
