@@ -4,12 +4,15 @@
 .nav {
   @include flexcol(center, center);
   background-color: $darker-blue;
+  width: 15%;
   height: 100%;
 }
 
 .navbar {
   background-color: $dark-blue;
   padding: 1.5em;
+  width: 100%;
+  overflow: hidden;
 
   &__list {
     @include flexcol(center, initial, 1em);

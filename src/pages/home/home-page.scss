@@ -3,6 +3,8 @@
 
 .home {
   @include flexcol(initial, initial, 1em);
+  padding-bottom: 1em;
+  overflow: auto;
 
   &__columns-button {
     @include font(0.5, normal, $basic-blue);
@@ -17,7 +19,7 @@
 
 .tickets-table {
   border-collapse: collapse;
-  width: 100%;
+  max-width: 100%;
   text-align: left;
 
   &__header {

@@ -67,7 +67,7 @@ const TicketRequester = ({ selected, setSelected }) => {
             value={requester.id}
             className="ticket-form__option"
           >
-            {requester.displayname}
+            <p>{requester.displayname}</p>
           </option>
         ))}
       </select>
