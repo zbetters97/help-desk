@@ -1,6 +1,20 @@
 @use "src/styles/abstracts/mixins" as *;
 @use "src/styles/abstracts/variables" as *;
 
+.home {
+  @include flexcol(initial, initial, 1em);
+
+  &__columns-button {
+    @include font(0.5, normal, $basic-blue);
+    cursor: pointer;
+    margin: 1em 0 0 1em;
+    border: 1px solid $basic-blue;
+    border-radius: $border-sm;
+    padding: 0.5em 0.75em;
+    width: fit-content;
+  }
+}
+
 .tickets-table {
   border-collapse: collapse;
   width: 100%;

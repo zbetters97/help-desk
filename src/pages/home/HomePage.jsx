@@ -4,6 +4,7 @@ import { useAuthContext } from "src/features/auth/context/AuthContext";
 import TicketRows from "src/features/ticket/components/table/TicketRows";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
 import TicketColumns from "src/features/ticket/components/table/TicketColumns";
+import EditColumnsButton from "src/features/ticket/components/buttons/EditColumnsButton";
 import {
   arrayMove,
   horizontalListSortingStrategy,
@@ -43,8 +44,6 @@ const HomePage = () => {
     const fetchTickets = async () => {
       if (!globalUser) return;
 
-      setColumnOrder(globalUser.columns);
-
       let fetchedTickets =
         filter === "0"
           ? await getTicketsByAssignee("none")
@@ -67,6 +66,12 @@ const HomePage = () => {
 
     fetchTickets();
   }, [filter, globalUser]);
+
+  useEffect(() => {
+    if (globalUser?.columns) {
+      setColumnOrder(globalUser.columns);
+    }
+  }, [globalUser?.columns]);
 
   const columnData = {
     checkbox: {
@@ -126,10 +131,11 @@ const HomePage = () => {
     });
   };
 
-  if (!tickets) return null;
+  if (!tickets || !globalUser) return null;
 
   return (
     <section className="home">
+      <EditColumnsButton />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}

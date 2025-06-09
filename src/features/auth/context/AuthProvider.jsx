@@ -38,9 +38,17 @@ const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  const updateGlobalUserColumns = (columns) => {
+    setGlobalUser((prevUser) => ({
+      ...prevUser,
+      columns,
+    }));
+  };
+
   const authMethods = {
     loadingUser,
     globalUser,
+    updateGlobalUserColumns,
     ...useAuthMethods,
   };
 
