@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "src/features/auth/context/AuthContext";
 import TicketRows from "src/features/ticket/components/table/TicketRows";
 import { useTicketContext } from "src/features/ticket/context/TicketContext";
@@ -20,12 +20,14 @@ import {
 import "./home-page.scss";
 
 const HomePage = () => {
-  const { globalUser, updateUserColumns } = useAuthContext();
+  const { loadingUser, globalUser, updateUserColumns } = useAuthContext();
   const { getAllTickets, getTicketsByStatus, getTicketsByAssignee } =
     useTicketContext();
 
   const params = useParams();
   const filter = params?.filter;
+
+  const navigate = useNavigate();
 
   const [tickets, setTickets] = useState([]);
   const [columnOrder, setColumnOrder] = useState([
@@ -42,7 +44,13 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchTickets = async () => {
-      if (!globalUser) return;
+      if (loadingUser) return;
+
+      if (!globalUser) {
+        // If no user is logged in, redirect to login page
+        navigate("/auth");
+        return;
+      }
 
       let fetchedTickets =
         filter === "0"
@@ -65,7 +73,7 @@ const HomePage = () => {
     };
 
     fetchTickets();
-  }, [filter, globalUser]);
+  }, [filter, loadingUser, globalUser]);
 
   useEffect(() => {
     if (globalUser?.columns) {

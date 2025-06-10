@@ -82,7 +82,7 @@ const PasswordReset = ({ isModalOpen, setSuccess }) => {
 
       <Alert message={error} />
       <button
-        type="submit"
+        type="button"
         onClick={handleSubmit}
         className="auth__submit"
         aria-label="reset password"
